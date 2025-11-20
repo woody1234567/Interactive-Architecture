@@ -37,7 +37,7 @@ onMounted(() => {
   // Scene setup
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(0x87ceeb); // Sky blue background
-  scene.fog = new THREE.Fog(0x87ceeb, 10, 50);
+  scene.fog = new THREE.Fog(0x87ceeb, 10, 100);
 
   // Camera setup
   const camera = new THREE.PerspectiveCamera(
@@ -57,16 +57,16 @@ onMounted(() => {
 
   // Controls
   const controls = new FlyControls(camera, renderer.domElement);
-  controls.movementSpeed = 10;
+  controls.movementSpeed = 20;
   controls.domElement = renderer.domElement;
-  controls.rollSpeed = Math.PI / 24;
+  controls.rollSpeed = (5 * Math.PI) / 24;
   controls.autoForward = false;
   controls.dragToLook = true;
 
   const clock = new THREE.Clock();
 
   // Lights
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
   scene.add(ambientLight);
 
   const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
