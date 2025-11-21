@@ -33,18 +33,11 @@ const cards = [
     buttonText: "View Model",
   },
   {
-    title: "Architecture from Revit",
-    description: "Another interactive 3D demo.",
-    link: "/demo2",
-    image: previewRevitArch,
-    buttonText: "View Demo 2",
-  },
-  {
     title: "Cathedral",
     description: "Orbit control demo with a detailed GLTF model.",
-    link: "/demo3",
+    link: "/demo2",
     image: previewCathedral,
-    buttonText: "View Demo 3",
+    buttonText: "View Demo 2",
   },
 ];
 </script>
