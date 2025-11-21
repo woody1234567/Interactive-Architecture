@@ -97,7 +97,7 @@ onMounted(() => {
   // GLTF Loader
   const loader = new GLTFLoader();
   loader.load(
-    "/models/demo2.gltf",
+    "/models/demo2/demo2.gltf",
     (gltf) => {
       const model = gltf.scene;
 
@@ -110,7 +110,7 @@ onMounted(() => {
       // Adjusting y position so the bottom of the model is at y=0
       //   const size = box.getSize(new THREE.Vector3());
       //   model.position.y += size.y / 2;
-      model.position.y = -3.5;
+      model.position.y = 0;
 
       model.traverse((child) => {
         if ((child as THREE.Mesh).isMesh) {

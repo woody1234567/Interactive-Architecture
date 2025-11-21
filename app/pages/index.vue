@@ -9,64 +9,42 @@
             Experience architectural modeling like never before. Interact with
             3D models directly in your browser with our powerful web tool.
           </p>
-          <NuxtLink to="/architecture" class="btn btn-primary"
-            >Get Started</NuxtLink
-          >
+          <NuxtLink to="/demo1" class="btn btn-primary">Get Started</NuxtLink>
         </div>
       </div>
     </div>
 
     <!-- Cards Section -->
-    <div class="container mx-auto p-4">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <!-- Architecture Card -->
-        <div class="card bg-base-100 shadow-xl">
-          <figure>
-            <img
-              src="../assets/pictures/preview_architecture.png"
-              alt="Architecture"
-            />
-          </figure>
-          <div class="card-body">
-            <h2 class="card-title">Architecture Demo</h2>
-            <p>
-              Explore our 3D architectural model with fly controls and
-              interactive elements.
-            </p>
-            <div class="card-actions justify-end">
-              <NuxtLink to="/architecture" class="btn btn-primary"
-                >View Model</NuxtLink
-              >
-            </div>
-          </div>
-        </div>
-
-        <!-- Placeholder Card 2 -->
-        <div class="card bg-base-100 shadow-xl">
-          <div class="card-body">
-            <h2 class="card-title">Future Project</h2>
-            <p>More interactive models coming soon.</p>
-            <div class="card-actions justify-end">
-              <button class="btn btn-ghost" disabled>Coming Soon</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Placeholder Card 3 -->
-        <div class="card bg-base-100 shadow-xl">
-          <div class="card-body">
-            <h2 class="card-title">Documentation</h2>
-            <p>Learn how to use the tools and controls.</p>
-            <div class="card-actions justify-end">
-              <button class="btn btn-ghost">Read Docs</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <FeatureCards :items="cards" />
   </div>
 </template>
 
 <script setup lang="ts">
-// No script needed for this layout
+import previewArchitecture from "../assets/pictures/preview_architecture.png";
+import previewCathedral from "../assets/pictures/cathedral_preview.png";
+import previewRevitArch from "../assets/pictures/architecture_revit.png";
+const cards = [
+  {
+    title: "Architecture Demo",
+    description:
+      "Explore our 3D architectural model with fly controls and interactive elements.",
+    image: previewArchitecture,
+    link: "/demo1",
+    buttonText: "View Model",
+  },
+  {
+    title: "Architecture from Revit",
+    description: "Another interactive 3D demo.",
+    link: "/demo2",
+    image: previewRevitArch,
+    buttonText: "View Demo 2",
+  },
+  {
+    title: "Cathedral",
+    description: "Orbit control demo with a detailed GLTF model.",
+    link: "/demo3",
+    image: previewCathedral,
+    buttonText: "View Demo 3",
+  },
+];
 </script>
