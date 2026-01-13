@@ -37,7 +37,7 @@ const cards = [
     description: "Orbit control demo with a detailed GLTF model.",
     link: "/cathedral",
     image: previewCathedral,
-    buttonText: "View Demo 2",
+    buttonText: "View Model",
   },
   {
     title: "Architecture with environment",
