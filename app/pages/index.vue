@@ -9,7 +9,7 @@
             Experience architectural modeling like never before. Interact with
             3D models directly in your browser with our powerful web tool.
           </p>
-          <NuxtLink to="/demo1" class="btn btn-primary">Get Started</NuxtLink>
+          <NuxtLink to="/arch" class="btn btn-primary">Get Started</NuxtLink>
         </div>
       </div>
     </div>
@@ -22,20 +22,20 @@
 <script setup lang="ts">
 import previewArchitecture from "../assets/pictures/preview_architecture.png";
 import previewCathedral from "../assets/pictures/cathedral_preview.png";
-import previewRevitArch from "../assets/pictures/architecture_revit.png";
+import previewArchwithenv from "../assets/pictures/arch_with_env.png";
 const cards = [
   {
     title: "Architecture Demo",
     description:
       "Explore our 3D architectural model with fly controls and interactive elements.",
     image: previewArchitecture,
-    link: "/demo1",
+    link: "/arch",
     buttonText: "View Model",
   },
   {
     title: "Cathedral",
     description: "Orbit control demo with a detailed GLTF model.",
-    link: "/demo2",
+    link: "/cathedral",
     image: previewCathedral,
     buttonText: "View Demo 2",
   },
@@ -43,8 +43,8 @@ const cards = [
     title: "Architecture with environment",
     description:
       "Explore our 3D architectural model with fly controls and interactive elements.",
-    image: previewArchitecture,
-    link: "/demo3",
+    image: previewArchwithenv,
+    link: "/arch_with_env",
     buttonText: "View Model",
   },
 ];

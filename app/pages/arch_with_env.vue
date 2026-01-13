@@ -96,7 +96,7 @@ onMounted(() => {
   // GLTF Loader
   const loader = new GLTFLoader();
   loader.load(
-    "/models/demo3/arch_with_env.gltf",
+    "/models/arch_with_env/arch_with_env.gltf",
     (gltf) => {
       const model = gltf.scene;
 

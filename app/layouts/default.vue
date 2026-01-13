@@ -10,9 +10,9 @@
           <details>
             <summary>model</summary>
             <ul class="bg-base-100 rounded-t-none p-2 z-30">
-              <li><NuxtLink to="/demo1">Demo1</NuxtLink></li>
-              <li><NuxtLink to="/demo2">Demo2</NuxtLink></li>
-              <li><NuxtLink to="/demo3">Demo3</NuxtLink></li>
+              <li><NuxtLink to="/arch">Demo1</NuxtLink></li>
+              <li><NuxtLink to="/cathedral">Demo2</NuxtLink></li>
+              <li><NuxtLink to="/arch_with_env">Demo3</NuxtLink></li>
             </ul>
           </details>
         </li>
