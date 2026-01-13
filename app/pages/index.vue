@@ -39,5 +39,13 @@ const cards = [
     image: previewCathedral,
     buttonText: "View Demo 2",
   },
+  {
+    title: "Architecture with environment",
+    description:
+      "Explore our 3D architectural model with fly controls and interactive elements.",
+    image: previewArchitecture,
+    link: "/demo3",
+    buttonText: "View Model",
+  },
 ];
 </script>
