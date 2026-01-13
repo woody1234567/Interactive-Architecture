@@ -20,7 +20,7 @@
 </template>
 
 <script setup lang="ts">
-import previewArchitecture from "../assets/pictures/preview_architecture.png";
+import previewArchitecture from "../assets/pictures/arch_preview.png";
 import previewCathedral from "../assets/pictures/cathedral_preview.png";
 import previewArchwithenv from "../assets/pictures/arch_with_env.png";
 const cards = [
