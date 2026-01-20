@@ -44,7 +44,7 @@ onMounted(() => {
     75,
     window.innerWidth / window.innerHeight,
     0.1,
-    1000
+    1000,
   );
   camera.position.set(0, 10, 30);
 
@@ -97,7 +97,7 @@ onMounted(() => {
   // GLTF Loader
   const loader = new GLTFLoader();
   loader.load(
-    "/models/demo1/demo1.gltf",
+    "/models/arch/arch_updated.gltf",
     (gltf) => {
       const model = gltf.scene;
 
@@ -130,7 +130,7 @@ onMounted(() => {
     (error) => {
       console.error("An error occurred loading the GLTF model:", error);
       loading.value = false;
-    }
+    },
   );
 
   // Animation loop
