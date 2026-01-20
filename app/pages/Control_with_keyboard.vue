@@ -14,8 +14,7 @@
         <li>W / S: Move Forward / Backward</li>
         <li>A / D: Move Left / Right</li>
         <li>R / F: Move Up / Down</li>
-        <li>Q / E: Roll</li>
-        <li>Mouse: Look around</li>
+        <li>Q / E: Rotate Left / Right</li>
       </ul>
     </div>
   </div>
@@ -59,9 +58,34 @@ onMounted(() => {
   const controls = new FlyControls(camera, renderer.domElement);
   controls.movementSpeed = 20;
   controls.domElement = renderer.domElement;
-  controls.rollSpeed = (5 * Math.PI) / 24;
+  controls.rollSpeed = 0; // Disable built-in roll
   controls.autoForward = false;
   controls.dragToLook = true;
+
+  // Custom key state for Q/E yaw
+  const keyState = { q: false, e: false };
+  const onKeyDown = (e: KeyboardEvent) => {
+    switch (e.code) {
+      case "KeyQ":
+        keyState.q = true;
+        break;
+      case "KeyE":
+        keyState.e = true;
+        break;
+    }
+  };
+  const onKeyUp = (e: KeyboardEvent) => {
+    switch (e.code) {
+      case "KeyQ":
+        keyState.q = false;
+        break;
+      case "KeyE":
+        keyState.e = false;
+        break;
+    }
+  };
+  window.addEventListener("keydown", onKeyDown);
+  window.addEventListener("keyup", onKeyUp);
 
   let animationId: number;
 
@@ -142,6 +166,14 @@ onMounted(() => {
     const delta = clock.getDelta();
     controls.update(delta);
 
+    // Custom Yaw (Rotate Left/Right)
+    const yawSpeed = 1.0 * delta; // Adjust speed as needed
+    if (keyState.q) camera.rotation.y += yawSpeed;
+    if (keyState.e) camera.rotation.y -= yawSpeed;
+
+    // Force Horizontal (Lock Roll)
+    camera.rotation.z = 0;
+
     renderer.render(scene, camera);
   };
   animate();
@@ -159,6 +191,8 @@ onMounted(() => {
   // Cleanup
   onUnmounted(() => {
     window.removeEventListener("resize", handleResize);
+    window.removeEventListener("keydown", onKeyDown);
+    window.removeEventListener("keyup", onKeyUp);
     if (animationId) cancelAnimationFrame(animationId);
 
     if (scene) {
