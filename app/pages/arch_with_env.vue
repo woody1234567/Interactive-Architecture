@@ -96,7 +96,7 @@ onMounted(() => {
   // Renderer setup
   renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.setPixelRatio(window.devicePixelRatio);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.shadowMap.enabled = true;
   container.value.appendChild(renderer.domElement);
 
@@ -179,9 +179,36 @@ onMounted(() => {
 onUnmounted(() => {
   window.removeEventListener("resize", handleResize);
   window.removeEventListener("dblclick", onDoubleClick);
+
   if (animationId) cancelAnimationFrame(animationId);
-  if (renderer) renderer.dispose();
+
+  if (scene) {
+    scene.traverse((child) => {
+      if ((child as THREE.Mesh).isMesh) {
+        const mesh = child as THREE.Mesh;
+
+        if (mesh.geometry) {
+          mesh.geometry.dispose();
+        }
+
+        if (mesh.material) {
+          if (Array.isArray(mesh.material)) {
+            mesh.material.forEach((m) => m.dispose());
+          } else {
+            mesh.material.dispose();
+          }
+        }
+      }
+    });
+  }
+
+  if (renderer) {
+    renderer.dispose();
+    renderer.forceContextLoss();
+  }
+
   if (controls) controls.dispose();
+
   if (
     container.value &&
     renderer &&
