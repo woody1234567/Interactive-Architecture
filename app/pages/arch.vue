@@ -42,14 +42,14 @@ onMounted(() => {
     75,
     window.innerWidth / window.innerHeight,
     0.1,
-    1000
+    1000,
   );
   camera.position.set(10, 10, 10);
 
   // Renderer setup
   const renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.setPixelRatio(window.devicePixelRatio);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.shadowMap.enabled = true;
   container.value.appendChild(renderer.domElement);
 
@@ -62,6 +62,7 @@ onMounted(() => {
   controls.maxDistance = 50;
   controls.maxPolarAngle = Math.PI / 2; // Don't go below ground
 
+  let animationId: number;
   const clock = new THREE.Clock();
 
   // Lights
@@ -132,12 +133,12 @@ onMounted(() => {
     (error) => {
       console.error("An error occurred loading the GLTF model:", error);
       loading.value = false;
-    }
+    },
   );
 
   // Animation loop
   const animate = () => {
-    requestAnimationFrame(animate);
+    animationId = requestAnimationFrame(animate);
 
     controls.update(); // required if damping enabled
 
@@ -158,9 +159,38 @@ onMounted(() => {
   // Cleanup
   onUnmounted(() => {
     window.removeEventListener("resize", handleResize);
-    renderer.dispose();
-    controls.dispose();
-    if (container.value) {
+    if (animationId) cancelAnimationFrame(animationId);
+
+    if (scene) {
+      scene.traverse((child) => {
+        if ((child as THREE.Mesh).isMesh) {
+          const mesh = child as THREE.Mesh;
+
+          if (mesh.geometry) mesh.geometry.dispose();
+
+          if (mesh.material) {
+            if (Array.isArray(mesh.material)) {
+              mesh.material.forEach((m) => m.dispose());
+            } else {
+              mesh.material.dispose();
+            }
+          }
+        }
+      });
+    }
+
+    if (renderer) {
+      renderer.dispose();
+      renderer.forceContextLoss();
+    }
+
+    if (controls) controls.dispose();
+
+    if (
+      container.value &&
+      renderer.domElement &&
+      container.value.contains(renderer.domElement)
+    ) {
       container.value.removeChild(renderer.domElement);
     }
   });

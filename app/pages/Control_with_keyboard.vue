@@ -51,7 +51,7 @@ onMounted(() => {
   // Renderer setup
   const renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.setPixelRatio(window.devicePixelRatio);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.shadowMap.enabled = true;
   container.value.appendChild(renderer.domElement);
 
@@ -62,6 +62,8 @@ onMounted(() => {
   controls.rollSpeed = (5 * Math.PI) / 24;
   controls.autoForward = false;
   controls.dragToLook = true;
+
+  let animationId: number;
 
   const clock = new THREE.Clock();
 
@@ -135,7 +137,7 @@ onMounted(() => {
 
   // Animation loop
   const animate = () => {
-    requestAnimationFrame(animate);
+    animationId = requestAnimationFrame(animate);
 
     const delta = clock.getDelta();
     controls.update(delta);
@@ -157,9 +159,38 @@ onMounted(() => {
   // Cleanup
   onUnmounted(() => {
     window.removeEventListener("resize", handleResize);
-    renderer.dispose();
-    controls.dispose();
-    if (container.value) {
+    if (animationId) cancelAnimationFrame(animationId);
+
+    if (scene) {
+      scene.traverse((child) => {
+        if ((child as THREE.Mesh).isMesh) {
+          const mesh = child as THREE.Mesh;
+
+          if (mesh.geometry) mesh.geometry.dispose();
+
+          if (mesh.material) {
+            if (Array.isArray(mesh.material)) {
+              mesh.material.forEach((m) => m.dispose());
+            } else {
+              mesh.material.dispose();
+            }
+          }
+        }
+      });
+    }
+
+    if (renderer) {
+      renderer.dispose();
+      renderer.forceContextLoss();
+    }
+
+    if (controls) controls.dispose();
+
+    if (
+      container.value &&
+      renderer.domElement &&
+      container.value.contains(renderer.domElement)
+    ) {
       container.value.removeChild(renderer.domElement);
     }
   });
