@@ -18,7 +18,7 @@
       </ul>
       <button
         @click="resetCamera"
-        class="mt-4 bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded w-full transition"
+        class="mt-4 bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded w-full transition pointer-events-auto"
       >
         Reset Camera
       </button>
