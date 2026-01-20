@@ -42,7 +42,7 @@ onMounted(() => {
     75,
     window.innerWidth / window.innerHeight,
     0.1,
-    1000
+    1000,
   );
   camera.position.set(10, 10, 10);
 
@@ -56,11 +56,14 @@ onMounted(() => {
   // Controls
   const controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
+  controls.enablePan = true;
+  controls.enableZoom = true;
   controls.dampingFactor = 0.05;
-  controls.screenSpacePanning = false;
-  controls.minDistance = 1;
-  controls.maxDistance = 50;
-  controls.maxPolarAngle = Math.PI / 2; // Don't go below ground
+  controls.screenSpacePanning = true;
+  // controls.minDistance = 1;
+  // controls.maxDistance = 10;
+  // controls.maxZoom = 1000;
+  // controls.maxPolarAngle = Math.PI / 2; // Don't go below ground
 
   const clock = new THREE.Clock();
 
@@ -132,7 +135,7 @@ onMounted(() => {
     (error) => {
       console.error("An error occurred loading the GLTF model:", error);
       loading.value = false;
-    }
+    },
   );
 
   // Animation loop
