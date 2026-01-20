@@ -46,6 +46,7 @@ onMounted(() => {
     1000,
   );
   camera.position.set(0, 10, 30);
+  camera.rotation.order = "YXZ";
 
   // Renderer setup
   const renderer = new THREE.WebGLRenderer({ antialias: true });
