@@ -14,7 +14,14 @@
         <li>Left Click + Drag: Rotate</li>
         <li>Right Click + Drag: Pan</li>
         <li>Scroll: Zoom</li>
+        <li>Double Click: Focus on object</li>
       </ul>
+      <button
+        @click="resetCamera"
+        class="mt-4 bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded w-full transition"
+      >
+        Reset Camera
+      </button>
     </div>
   </div>
 </template>
@@ -29,16 +36,56 @@ const container = ref<HTMLDivElement | null>(null);
 const loading = ref(true);
 const progress = ref(0);
 
+let camera: THREE.PerspectiveCamera;
+let controls: OrbitControls;
+let renderer: THREE.WebGLRenderer;
+let scene: THREE.Scene;
+let raycaster: THREE.Raycaster;
+let mouse: THREE.Vector2;
+let animationId: number;
+
+const resetCamera = () => {
+  if (camera && controls) {
+    camera.position.set(10, 10, 10);
+    controls.target.set(0, 0, 0);
+    controls.update();
+  }
+};
+
+const onDoubleClick = (event: MouseEvent) => {
+  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+  if (camera) {
+    raycaster.setFromCamera(mouse, camera);
+    if (scene) {
+      const intersects = raycaster.intersectObjects(scene.children, true);
+      if (intersects.length > 0 && controls) {
+        const p = intersects[0].point;
+        controls.target.copy(p);
+        controls.update();
+      }
+    }
+  }
+};
+
+const handleResize = () => {
+  if (!container.value || !camera || !renderer) return;
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+};
+
 onMounted(() => {
   if (!container.value) return;
 
   // Scene setup
-  const scene = new THREE.Scene();
+  scene = new THREE.Scene();
   scene.background = new THREE.Color(0x87ceeb); // Sky blue background
   // scene.fog = new THREE.Fog(0x87ceeb, 10, 100);
 
   // Camera setup
-  const camera = new THREE.PerspectiveCamera(
+  camera = new THREE.PerspectiveCamera(
     75,
     window.innerWidth / window.innerHeight,
     0.1,
@@ -47,14 +94,14 @@ onMounted(() => {
   camera.position.set(10, 10, 10);
 
   // Renderer setup
-  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setPixelRatio(window.devicePixelRatio);
   renderer.shadowMap.enabled = true;
   container.value.appendChild(renderer.domElement);
 
   // Controls
-  const controls = new OrbitControls(camera, renderer.domElement);
+  controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
   controls.enablePan = true;
   controls.enableZoom = true;
@@ -65,7 +112,9 @@ onMounted(() => {
   // controls.maxZoom = 1000;
   // controls.maxPolarAngle = Math.PI / 2; // Don't go below ground
 
-  const clock = new THREE.Clock();
+  // Raycaster and Mouse setup
+  raycaster = new THREE.Raycaster();
+  mouse = new THREE.Vector2();
 
   // Lights
   const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
@@ -80,22 +129,6 @@ onMounted(() => {
   directionalLight.shadow.camera.right = 20;
   scene.add(directionalLight);
 
-  // // Ground Plane
-  // const groundGeometry = new THREE.PlaneGeometry(100, 100);
-  // const groundMaterial = new THREE.MeshStandardMaterial({
-  //   color: 0x808080,
-  //   roughness: 0.8,
-  //   metalness: 0.2,
-  // });
-  // const ground = new THREE.Mesh(groundGeometry, groundMaterial);
-  // ground.rotation.x = -Math.PI / 2; // Rotate to be horizontal
-  // ground.receiveShadow = true;
-  // scene.add(ground);
-
-  // // Grid Helper
-  // const gridHelper = new THREE.GridHelper(100, 100);
-  // scene.add(gridHelper);
-
   // GLTF Loader
   const loader = new GLTFLoader();
   loader.load(
@@ -108,15 +141,6 @@ onMounted(() => {
       const center = box.getCenter(new THREE.Vector3(0, 0, 0));
       model.position.sub(center); // Center at (0,0,0)
 
-      // // Lift model to sit on ground
-      // const size = box.getSize(new THREE.Vector3());
-      // // Reset y to 0 after centering, then lift by half height if pivot is center,
-      // // but usually we just want to ensure the bottom is at y=0.
-      // // Let's re-calculate box after centering to be sure.
-      // const box2 = new THREE.Box3().setFromObject(model);
-      // const minY = box2.min.y;
-      // model.position.y -= minY;
-
       model.traverse((child) => {
         if ((child as THREE.Mesh).isMesh) {
           child.castShadow = true;
@@ -124,7 +148,7 @@ onMounted(() => {
         }
       });
 
-      scene.add(model);
+      if (scene) scene.add(model);
       loading.value = false;
     },
     (xhr) => {
@@ -138,34 +162,33 @@ onMounted(() => {
     },
   );
 
-  // Animation loop
-  const animate = () => {
-    requestAnimationFrame(animate);
-
-    controls.update(); // required if damping enabled
-
-    renderer.render(scene, camera);
-  };
-  animate();
-
-  // Handle window resize
-  const handleResize = () => {
-    if (!container.value) return;
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-  };
-
+  window.addEventListener("dblclick", onDoubleClick);
   window.addEventListener("resize", handleResize);
 
-  // Cleanup
-  onUnmounted(() => {
-    window.removeEventListener("resize", handleResize);
-    renderer.dispose();
-    controls.dispose();
-    if (container.value) {
-      container.value.removeChild(renderer.domElement);
-    }
-  });
+  // Animation loop
+  const animate = () => {
+    animationId = requestAnimationFrame(animate);
+
+    if (controls) controls.update(); // required if damping enabled
+    if (renderer && scene && camera) renderer.render(scene, camera);
+  };
+  animate();
+});
+
+// Cleanup
+onUnmounted(() => {
+  window.removeEventListener("resize", handleResize);
+  window.removeEventListener("dblclick", onDoubleClick);
+  if (animationId) cancelAnimationFrame(animationId);
+  if (renderer) renderer.dispose();
+  if (controls) controls.dispose();
+  if (
+    container.value &&
+    renderer &&
+    renderer.domElement &&
+    container.value.contains(renderer.domElement)
+  ) {
+    container.value.removeChild(renderer.domElement);
+  }
 });
 </script>
