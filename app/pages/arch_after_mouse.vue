@@ -9,11 +9,11 @@
     <div
       class="absolute top-4 left-4 bg-black/50 text-white p-4 rounded pointer-events-none"
     >
-      <h3 class="font-bold mb-2">Controls</h3>
+      <h3 class="font-bold mb-2">控制</h3>
       <ul class="text-sm">
-        <li>Left Click + Drag: Rotate</li>
-        <li>Right Click + Drag: Pan</li>
-        <li>Scroll: Zoom</li>
+        <li>左鍵 + 拖曳: 旋轉</li>
+        <li>右鍵 + 拖曳: 平移</li>
+        <li>滾輪: 縮放</li>
       </ul>
     </div>
   </div>

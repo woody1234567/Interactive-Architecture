@@ -9,12 +9,12 @@
     <div
       class="absolute top-4 left-4 bg-black/50 text-white p-4 rounded pointer-events-none"
     >
-      <h3 class="font-bold mb-2">Controls</h3>
+      <h3 class="font-bold mb-2">控制</h3>
       <ul class="text-sm">
-        <li>W / S: Move Forward / Backward</li>
-        <li>A / D: Move Left / Right</li>
-        <li>R / F: Move Up / Down</li>
-        <li>Q / E: Rotate Left / Right</li>
+        <li>W / S: 向前 / 向後</li>
+        <li>A / D: 向左 / 向右</li>
+        <li>R / F: 向上 / 向下</li>
+        <li>Q / E: 旋轉左 / 旋轉右</li>
       </ul>
     </div>
   </div>
