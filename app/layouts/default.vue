@@ -1,37 +1,67 @@
+<script setup lang="ts">
+const items = [
+  {
+    label: "首頁",
+    to: "/",
+    icon: "i-lucide-house",
+  },
+  {
+    label: "模型",
+    icon: "i-lucide-box",
+    children: [
+      {
+        label: "建築模型(滑鼠控制)",
+        to: "/arch",
+        icon: "i-lucide-mouse-pointer-2",
+      },
+      {
+        label: "建築模型(鍵盤控制)",
+        to: "/Control_with_keyboard",
+        icon: "i-lucide-keyboard",
+      },
+      {
+        label: "環境模型",
+        to: "/arch_with_env",
+        icon: "i-lucide-mountain",
+      },
+    ],
+  },
+];
+</script>
+
 <template>
   <div class="flex flex-col min-h-screen">
-    <div class="navbar bg-base-100 shadow-sm">
-      <div class="flex-1">
-        <NuxtLink to="/" class="btn btn-ghost text-xl"
-          >網頁互動式建築模型</NuxtLink
-        >
-      </div>
-      <div class="flex-none">
-        <ul class="menu menu-horizontal px-1">
-          <li><NuxtLink to="/">首頁</NuxtLink></li>
-          <li>
-            <details>
-              <summary>模型</summary>
-              <ul class="bg-base-100 rounded-t-none p-2 z-30">
-                <li><NuxtLink to="/arch">建築模型(滑鼠控制)</NuxtLink></li>
-                <li>
-                  <NuxtLink to="/Control_with_keyboard"
-                    >建築模型(鍵盤控制)</NuxtLink
-                  >
-                </li>
+    <header class="border-b border-default sticky top-0 bg-default z-50">
+      <UContainer>
+        <div class="flex items-center justify-between h-16">
+          <div class="flex items-center gap-8">
+            <NuxtLink to="/" class="text-xl font-bold flex items-center gap-2">
+              <UIcon name="i-lucide-building-2" class="w-6 h-6" />
+              <span>網頁互動式建築模型</span>
+            </NuxtLink>
+            <UNavigationMenu
+              :items="items"
+              variant="pill"
+              class="hidden md:flex"
+            />
+          </div>
+          <div class="flex items-center gap-2">
+            <UColorModeButton />
+            <UButton
+              color="neutral"
+              variant="ghost"
+              icon="i-lucide-menu"
+              class="md:hidden"
+            />
+          </div>
+        </div>
+      </UContainer>
+    </header>
 
-                <!-- <li><NuxtLink to="/cathedral">cathedral</NuxtLink></li> -->
-                <li><NuxtLink to="/arch_with_env">環境模</NuxtLink></li>
-              </ul>
-            </details>
-          </li>
-        </ul>
-      </div>
-    </div>
-    <div class="grow">
-      <slot></slot>
-    </div>
+    <main class="grow">
+      <slot />
+    </main>
+
     <AppFooter />
   </div>
 </template>
-<script lang="ts"></script>

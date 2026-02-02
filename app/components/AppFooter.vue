@@ -1,22 +1,24 @@
 <template>
-  <footer
-    class="footer sm:footer-horizontal bg-neutral text-neutral-content p-10 mt-auto"
-  >
-    <aside>
-      <svg
-        width="50"
-        height="50"
-        viewBox="0 0 24 24"
-        xmlns="http://www.w3.org/2000/svg"
-        fill-rule="evenodd"
-        clip-rule="evenodd"
-        class="fill-current"
+  <footer class="border-t border-default py-8 bg-default mt-auto">
+    <UContainer>
+      <div
+        class="flex flex-col md:flex-row items-center justify-between gap-4 text-muted text-sm"
       >
-        <path
-          d="M22.672 15.226l-2.432.811.841 2.521c.83 2.489-.492 5.128-2.95 5.958-2.458.83-5.096-.492-5.926-2.95l-.841-2.521-2.432.811.841 2.521c.83 2.489-.492 5.128-2.95 5.958-2.458.83-5.096-.492-5.926-2.95l-.841-2.521-2.432.811c-1.229.41-2.546-.246-2.956-1.475-.41-1.229.246-2.546 1.475-2.956l2.432-.811-.841-2.521c-.83-2.489.492-5.128 2.95-5.958 2.458-.83 5.096.492 5.926 2.95l.841 2.521 2.432-.811-.841-2.521c-.83-2.489.492-5.128 2.95-5.958 2.458-.83 5.096.492 5.926 2.95l.841 2.521 2.432-.811c1.229-.41 2.546.246 2.956 1.475.41 1.229-.246 2.546-1.475 2.956l-2.432.811.841 2.521c.83 2.489-.492 5.128-2.95 5.958-2.458.83-5.096-.492-5.926-2.95l-.841-2.521-2.432.811.841 2.521c.83 2.489-.492 5.128-2.95 5.958-2.458.83-5.096-.492-5.926-2.95l-.841-2.521-2.432.811c-1.229.41-2.546-.246-2.956-1.475-.41-1.229.246-2.546 1.475-2.956l2.432-.811-.841-2.521c-.83-2.489.492-5.128 2.95-5.958 2.458-.83 5.096.492 5.926 2.95l.841 2.521 2.432-.811-.841-2.521c-.83-2.489.492-5.128 2.95-5.958 2.458-.83 5.096.492 5.926 2.95l.841 2.521 2.432-.811c1.229-.41 2.546.246 2.956 1.475.41 1.229-.246 2.546-1.475 2.956z"
-        ></path>
-      </svg>
-      <p>Copyright © 2026-present StudyWithWoody.</p>
-    </aside>
+        <div class="flex items-center gap-2">
+          <UIcon name="i-lucide-building-2" class="w-5 h-5 text-primary" />
+          <span class="font-medium">網頁互動式建築模型</span>
+        </div>
+        <p>© 2026-present StudyWithWoody.</p>
+        <div class="flex items-center gap-4">
+          <UButton
+            icon="i-simple-icons-github"
+            color="neutral"
+            variant="ghost"
+            to="https://github.com"
+            target="_blank"
+          />
+        </div>
+      </div>
+    </UContainer>
   </footer>
 </template>

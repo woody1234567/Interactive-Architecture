@@ -1,29 +1,39 @@
 <template>
-  <div class="container mx-auto p-4">
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <div
+  <UContainer class="py-8">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <UCard
         v-for="(item, index) in items"
         :key="index"
-        class="card bg-base-100 shadow-xl"
+        class="overflow-hidden hover:shadow-lg transition-shadow duration-300"
+        :ui="{ body: 'flex flex-col gap-4 items-center text-center' }"
       >
-        <figure v-if="item.image">
-          <img :src="item.image" :alt="item.title" />
-        </figure>
-        <div class="card-body align-center flex">
-          <h2 class="card-title">{{ item.title }}</h2>
-          <p>{{ item.description }}</p>
-          <div class="card-actions justify-center">
-            <NuxtLink v-if="item.link" :to="item.link" class="btn btn-primary">
-              {{ item.buttonText || "View Demo" }}
-            </NuxtLink>
-            <button v-else class="btn btn-ghost" disabled>
-              {{ item.buttonText || "Coming Soon" }}
-            </button>
-          </div>
+        <template v-if="item.image" #header>
+          <img
+            :src="item.image"
+            :alt="item.title"
+            class="w-full h-48 object-cover"
+          />
+        </template>
+
+        <h2 class="text-xl font-bold">{{ item.title }}</h2>
+        <p class="text-muted">{{ item.description }}</p>
+
+        <div class="mt-auto">
+          <UButton
+            v-if="item.link"
+            :to="item.link"
+            color="primary"
+            class="px-8"
+          >
+            {{ item.buttonText || "View Demo" }}
+          </UButton>
+          <UButton v-else color="neutral" variant="ghost" disabled>
+            {{ item.buttonText || "Coming Soon" }}
+          </UButton>
         </div>
-      </div>
+      </UCard>
     </div>
-  </div>
+  </UContainer>
 </template>
 
 <script setup lang="ts">
