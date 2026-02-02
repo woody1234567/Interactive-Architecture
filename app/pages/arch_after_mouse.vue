@@ -11,10 +11,9 @@
     >
       <h3 class="font-bold mb-2">Controls</h3>
       <ul class="text-sm">
-        <li>W / S: Move Forward / Backward</li>
-        <li>A / D: Move Left / Right</li>
-        <li>R / F: Move Up / Down</li>
-        <li>Q / E: Rotate Left / Right</li>
+        <li>Left Click + Drag: Rotate</li>
+        <li>Right Click + Drag: Pan</li>
+        <li>Scroll: Zoom</li>
       </ul>
     </div>
   </div>
@@ -22,7 +21,7 @@
 
 <script setup lang="ts">
 import * as THREE from "three";
-import { FlyControls } from "three/examples/jsm/controls/FlyControls.js";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { ref, onMounted, onUnmounted } from "vue";
 
@@ -36,7 +35,7 @@ onMounted(() => {
   // Scene setup
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(0x87ceeb); // Sky blue background
-  scene.fog = new THREE.Fog(0x87ceeb, 10, 100);
+  // scene.fog = new THREE.Fog(0x87ceeb, 10, 100);
 
   // Camera setup
   const camera = new THREE.PerspectiveCamera(
@@ -45,8 +44,7 @@ onMounted(() => {
     0.1,
     1000,
   );
-  camera.position.set(0, 10, 30);
-  camera.rotation.order = "YXZ";
+  camera.position.set(0, 30, 40);
 
   // Renderer setup
   const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -56,44 +54,19 @@ onMounted(() => {
   container.value.appendChild(renderer.domElement);
 
   // Controls
-  const controls = new FlyControls(camera, renderer.domElement);
-  controls.movementSpeed = 20;
-  controls.domElement = renderer.domElement;
-  controls.rollSpeed = 0; // Disable built-in roll
-  controls.autoForward = false;
-  controls.dragToLook = true;
-
-  // Custom key state for Q/E yaw
-  const keyState = { q: false, e: false };
-  const onKeyDown = (e: KeyboardEvent) => {
-    switch (e.code) {
-      case "KeyQ":
-        keyState.q = true;
-        break;
-      case "KeyE":
-        keyState.e = true;
-        break;
-    }
-  };
-  const onKeyUp = (e: KeyboardEvent) => {
-    switch (e.code) {
-      case "KeyQ":
-        keyState.q = false;
-        break;
-      case "KeyE":
-        keyState.e = false;
-        break;
-    }
-  };
-  window.addEventListener("keydown", onKeyDown);
-  window.addEventListener("keyup", onKeyUp);
+  const controls = new OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.05;
+  controls.screenSpacePanning = false;
+  controls.minDistance = 1;
+  controls.maxDistance = 50;
+  controls.maxPolarAngle = Math.PI / 2; // Don't go below ground
 
   let animationId: number;
-
   const clock = new THREE.Clock();
 
   // Lights
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
   scene.add(ambientLight);
 
   const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
@@ -124,7 +97,7 @@ onMounted(() => {
   // GLTF Loader
   const loader = new GLTFLoader();
   loader.load(
-    "/models/arch/arch_updated.gltf",
+    "/models/arch_after/arch_after.gltf",
     (gltf) => {
       const model = gltf.scene;
 
@@ -133,10 +106,13 @@ onMounted(() => {
       const center = box.getCenter(new THREE.Vector3(0, 0, 0));
       model.position.sub(center); // Center at (0,0,0)
 
-      // Lift model to sit on ground if needed (assuming model bottom is at y=0 relative to its center)
-      // Adjusting y position so the bottom of the model is at y=0
+      //   // Lift model to sit on ground
       //   const size = box.getSize(new THREE.Vector3());
-      //   model.position.y += size.y / 2;
+      //   // Reset y to 0 after centering, then lift by half height if pivot is center,
+      //   // but usually we just want to ensure the bottom is at y=0.
+      //   // Let's re-calculate box after centering to be sure.
+      //   const box2 = new THREE.Box3().setFromObject(model);
+      //   const minY = box2.min.y;
       model.position.y = 0;
 
       model.traverse((child) => {
@@ -164,16 +140,7 @@ onMounted(() => {
   const animate = () => {
     animationId = requestAnimationFrame(animate);
 
-    const delta = clock.getDelta();
-    controls.update(delta);
-
-    // Custom Yaw (Rotate Left/Right)
-    const yawSpeed = 1.0 * delta; // Adjust speed as needed
-    if (keyState.q) camera.rotation.y += yawSpeed;
-    if (keyState.e) camera.rotation.y -= yawSpeed;
-
-    // Force Horizontal (Lock Roll)
-    camera.rotation.z = 0;
+    controls.update(); // required if damping enabled
 
     renderer.render(scene, camera);
   };
@@ -192,8 +159,6 @@ onMounted(() => {
   // Cleanup
   onUnmounted(() => {
     window.removeEventListener("resize", handleResize);
-    window.removeEventListener("keydown", onKeyDown);
-    window.removeEventListener("keyup", onKeyUp);
     if (animationId) cancelAnimationFrame(animationId);
 
     if (scene) {
