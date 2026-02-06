@@ -12,7 +12,12 @@
           <p class="py-6 text-lg text-(--ui-text-muted)">
             體驗建築模型互動式模型，透過網頁直接操作建築模型，讓你身歷其境，理解建築的方方面面
           </p>
-          <UButton to="/arch" size="xl" icon="i-lucide-arrow-right" trailing>
+          <UButton
+            to="/arch_before_mouse"
+            size="xl"
+            icon="i-lucide-arrow-right"
+            trailing
+          >
             開始體驗
           </UButton>
         </div>
