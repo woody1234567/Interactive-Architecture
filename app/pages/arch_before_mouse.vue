@@ -113,7 +113,7 @@ onMounted(() => {
       //   // Let's re-calculate box after centering to be sure.
       //   const box2 = new THREE.Box3().setFromObject(model);
       //   const minY = box2.min.y;
-      model.position.y = 0;
+      model.position.y = -3.4;
 
       model.traverse((child) => {
         if ((child as THREE.Mesh).isMesh) {

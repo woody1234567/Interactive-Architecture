@@ -140,6 +140,9 @@ onMounted(() => {
       const box = new THREE.Box3().setFromObject(model);
       const center = box.getCenter(new THREE.Vector3(0, 0, 0));
       model.position.sub(center); // Center at (0,0,0)
+      model.position.x -= 10;
+      model.position.y -= 10;
+      model.position.z -= 10;
 
       model.traverse((child) => {
         if ((child as THREE.Mesh).isMesh) {
